@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Home page</title>
+    <link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"  rel="stylesheet"/>
+
+
+</h:head>
+
+<h:body>
+    <div class="container">
+        <p:panel header="Nested Table Example">
+            <div class="row">
+                <div class="col-md-12">
+                    <h:outputText value="#{homeController.testField}"/>
+                    <h:form id="form">
+                        <p:dataTable id="cntrTable"
+                            rendered="#{not empty homeController.contracts}"
+                            styleClass="table table-data table-bordered"
+                            var="contract"
+                            rowKey="#{contract.escapedContractCode}"
+                            value="#{homeController.contracts}"
+                            expandedRow="true">
+                                <p:column headerText="Contract code">
+                                    <p:commandLink
+                                            id="plusIcon"
+                                            rendered="#{not contract.expanded}"
+                                            process="@this"
+                                            update="@form"
+                                            actionListener="#{homeController.refreshRowExpansion(contract,true)}">
+                                        <i class="pi pi-plus"/>
+                                    </p:commandLink>
+                                    <p:commandLink
+                                            id="minusIcon"
+                                            rendered="#{contract.expanded}"
+                                            process="@this"
+                                            update="@form"
+                                            actionListener="#{homeController.refreshRowExpansion(contract,false)}">
+                                        <i class="pi pi-minus"/>
+                                    </p:commandLink>
+                                    <h:outputText value="#{contract.contractCode}"/>
+                                </p:column>
+                                <p:column headerText="Ctv Total">
+                                    <h:outputText value="#{contract.totCtvPosition}">
+                                        <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:rowExpansion rendered="#{contract.expanded}">
+                                    <p:dataTable
+                                            rendered="#{not empty contract.positions}"
+                                            value="#{contract.positions}"
+                                            var="position"
+                                            rowKey="#{position.positionCode}"
+                                            styleClass="table table-data table-bordered">
+                                            <p:column headerText="Position code">
+                                                <h:outputText value="#{position.positionCode}"/>
+                                            </p:column>
+                                            <p:column headerText="Ctv position">
+                                                <h:outputText value="#{position.ctv}">
+                                                    <f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Qta position">
+                                                <h:outputText rendered="#{position.qta ne null}">
+                                                    <h:outputText value="#{position.qta}">
+                                                        <f:convertNumber type="number" maxFractionDigits="3" minFractionDigits="3"/>
+                                                    </h:outputText>
+                                                </h:outputText>
+                                            </p:column>
+                                    </p:dataTable>
+                                </p:rowExpansion>
+                        </p:dataTable>
+                    </h:form>
+                </div>
+            </div>
+        </p:panel>
+    </div>
+</h:body>
+</html>
